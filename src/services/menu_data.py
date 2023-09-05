@@ -6,10 +6,10 @@ from models.ingredient import Ingredient
 # Req 3
 class MenuData:
     def __init__(self, source_path: str) -> None:
-        self.source_path = source_path
-        self.dishes_file = self.get_dishes_from_file(source_path)
-        self.dishes_list = self.create_dishes_list(self.dishes_file)
-        self.dishes = set(self.create_dishes_instances(self.dishes_list))
+        self.__source_path = source_path
+        self.__dishes_file = self.get_dishes_from_file(self.__source_path)
+        self.__dishes_list = self.create_dishes_list(self.__dishes_file)
+        self.dishes = set(self.create_dishes_instances(self.__dishes_list))
 
     def get_dishes_from_file(self, source_path: str):
         with open(source_path, encoding="utf-8") as file:
