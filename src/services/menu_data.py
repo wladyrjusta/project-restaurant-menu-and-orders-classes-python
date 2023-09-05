@@ -43,10 +43,3 @@ class MenuData:
                 )
             instances_list.append(instance)
         return instances_list
-
-    def __str__(self) -> str:
-        return f"{self.dishes}"
-
-
-menu = MenuData("tests/mocks/menu_base_data.csv")
-print(menu)
