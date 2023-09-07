@@ -29,51 +29,40 @@ class MenuBuilder:
 
     # Req 4
     def get_main_menu(self, restriction=None) -> List[Dict]:
-        if len(self.inventory.inventory) < 3:
-            return []
         menu_list = []
         for dish in self.menu_data.dishes:
-            restrictions_list = [
-                ingredient.restrictions for ingredient in dish.recipe
-            ]
-            has_restriction = any(
-                restriction in conjunto for conjunto in restrictions_list
-            )
+            has_restriction = self.__verify_restrictions(dish, restriction)
             if has_restriction is False:
-                menu_list.append({
-                    'dish_name': dish.name,
-                    'ingredients': [
-                        ingredient for ingredient in dish.get_ingredients()
-                    ],
-                    'price': dish.price,
-                    'restrictions': [
-                        restrictions for restrictions in dish
-                        .get_restrictions()
-                    ],
-                })
+                has_ingredients = self.__has_ingredients_in_inventory(dish)
+                if has_ingredients is False:
+                    return []
+                else:
+                    self.__dish_dict_generate(dish, menu_list)
         return menu_list
 
+    def __verify_restrictions(self, dish, restriction=None):
+        restrictions_set = {
+            restrictions for restrictions in dish.get_restrictions()
+        }
+        return restriction in restrictions_set
 
-menu = MenuBuilder(
-    data_path="tests/mocks/menu_base_data.csv",
-    inventory_path="tests/mocks/inventory_base_data.csv",
-)
-menu.get_main_menu()
-# print([ingredient for dish in menu.menu_data.dishes
-#       for ingredient in dish.get_ingredients()])
+    def __has_ingredients_in_inventory(self, dish):
+        inventory_set = self.inventory.inventory
+        ingredients_list = {
+            ingredient for ingredient in dish.get_ingredients()
+        }
+        has_ingredients = ingredients_list.issubset(inventory_set)
+        return has_ingredients
 
-# for dish in menu.menu_data.dishes:
-#     ingredients_list = [ingredient for ingredient in dish.get_ingredients()]
-# inventory_list = menu.inventory.inventory
-# print(
-#       ingredients_list,
-#       inventory_list,
-#       inventory_list in ingredients_list)
-
-# for dish in menu.menu_data.dishes:
-#     for restrictions in dish.get_restrictions():
-#         print(restrictions)
-# print([
-#     value.value for restrictions_set in restrictions_list
-#     for value in restrictions_set
-# ])
+    def __dish_dict_generate(self, dish, menu_list):
+        menu_list.append({
+            'dish_name': dish.name,
+            'ingredients': [
+                ingredient for ingredient in dish.get_ingredients()
+                ],
+            'price': dish.price,
+            'restrictions': [
+                restrictions for restrictions in dish
+                .get_restrictions()
+                ],
+            })

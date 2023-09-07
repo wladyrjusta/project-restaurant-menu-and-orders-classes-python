@@ -7,16 +7,16 @@ from models.ingredient import Ingredient
 class MenuData:
     def __init__(self, source_path: str) -> None:
         self.__source_path = source_path
-        self.__dishes_file = self.get_dishes_from_file(self.__source_path)
-        self.__dishes_list = self.create_dishes_list(self.__dishes_file)
-        self.dishes = set(self.create_dishes_instances(self.__dishes_list))
+        self.__dishes_file = self.__get_dishes_from_file(self.__source_path)
+        self.__dishes_list = self.__create_dishes_list(self.__dishes_file)
+        self.dishes = set(self.__create_dishes_instances(self.__dishes_list))
 
-    def get_dishes_from_file(self, source_path: str):
+    def __get_dishes_from_file(self, source_path: str):
         with open(source_path, encoding="utf-8") as file:
             dishes = list(csv.DictReader(file, delimiter=",", quotechar='"'))
             return dishes
 
-    def create_dishes_list(self, dishes_file):
+    def __create_dishes_list(self, dishes_file):
         dishes_dict = {}
         for dish in dishes_file:
             if dish['dish'] in dishes_dict:
@@ -32,7 +32,7 @@ class MenuData:
                 )
         return dishes_dict
 
-    def create_dishes_instances(self, dishes_list):
+    def __create_dishes_instances(self, dishes_list):
         instances_list = []
         for dish, dish_details in dishes_list.items():
             instance = Dish(dish, float(dish_details['price']))
